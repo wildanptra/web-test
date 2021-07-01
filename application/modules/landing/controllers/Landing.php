@@ -2,10 +2,14 @@
 
 class Landing extends NoAuth_Controller {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-    function index() {
 
-        
+    public function index() 
+    {
         $this->load->view('landing');
     }
 

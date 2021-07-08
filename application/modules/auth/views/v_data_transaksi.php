@@ -45,7 +45,7 @@
                             <div class="card mb-4">
 
                                 <div class="card-header">
-                                    <h4>Data Transaksi</h4>
+                                    <h4>Data Transaction</h4>
                                 </div>
 
                                 <div class="card-body">
@@ -62,7 +62,7 @@
                                                 <th>#</th>
                                                 <th>User</th>
                                                 <th>Name Product</th>
-                                                <th>Tanggal Transaksi</th>
+                                                <th>Transaction Date</th>
                                                 <th>Quantity</th>
                                                 <th>Price</th>
                                                 <th>Total</th>

@@ -19,7 +19,7 @@
                     </div> Data Product </a>
 
                     <a class="nav-link" href="<?= site_url('auth/category') ?>"> <div class="sb-nav-link-icon"><i class="fas fa-folder"></i>
-                    </div> Data Category </a>
+                    </div>Category Product</a>
                 </nav>
             </div>
 
@@ -33,6 +33,17 @@
                     <a class="nav-link" href="<?= site_url('auth/order') ?>"> <div class="sb-nav-link-icon"><i class="fas fa-cash-register"></i></div> Order Product </a>
 
                     <a class="nav-link" href="<?= site_url('auth/order/data_transaksi') ?>"> <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div> Data Transaction </a>
+                </nav>
+            </div>
+
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseShipment" aria-expanded="false" aria-controls="collapseShipment">
+                <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                Shipment
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseShipment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link" href="<?= site_url('auth/shipment') ?>"> <div class="sb-nav-link-icon"><i class="fas fa-shipping-fast"></i></div> Shipping Process </a>
                 </nav>
             </div>
 

@@ -47,9 +47,21 @@
                         <div class="row mt-3">
                             <div class="col-sm-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4" style="height: 150px;">
+                                <div class="card-body">
+                                        <h4>Product</h4>
+                                        <p><?= $this->db->count_all_results('tb_product'); ?> Data Product</p>
+                                    </div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="<?= base_url('auth/product') ?>">See Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6">
+                                <div class="card bg-warning text-white mb-4" style="height: 150px;">
                                     <div class="card-body">
-                                        <h4>Category</h4>
-                                        <p><?= $this->db->count_all_results('tb_category'); ?> Data</p>
+                                        <h4>Category Product</h4>
+                                        <p><?= $this->db->count_all_results('tb_product'); ?> Data Category Product</p>
                                     </div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link" href="<?= base_url('auth/category') ?>">See Details</a>
@@ -60,20 +72,8 @@
                             <div class="col-sm-3 col-md-6">
                                 <div class="card bg-secondary text-white mb-4" style="height: 150px;">
                                 <div class="card-body">
-                                        <h4>Product</h4>
-                                        <p><?= $this->db->count_all_results('tb_product'); ?> Data</p>
-                                    </div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="<?= base_url('auth/product') ?>">See Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4" style="height: 150px;">
-                                <div class="card-body">
                                         <h4>Order</h4>
-                                        <p><?= $this->db->count_all_results('tb_product'); ?> Data</p>
+                                        <p><?= $this->db->count_all_results('tb_order'); ?> Data Order</p>
                                     </div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link" href="<?= base_url('auth/order') ?>">See Details</a>
@@ -85,7 +85,7 @@
                                 <div class="card bg-danger text-white mb-4" style="height: 150px;">
                                 <div class="card-body">
                                         <h4>Shipment</h4>
-                                        <p>0 Data</p>
+                                        <p>0 Data Shipment</p>
                                     </div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link" href="<?= base_url('auth/landing') ?>">See Details</a>

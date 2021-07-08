@@ -177,7 +177,7 @@ class Product extends NoAuth_Controller {
 
         if($this->input->post('id_category') == '') {
             $data['inputerror'][] = 'id_category';
-            $data['error_string'][] = 'Kategori Product harus di isi';
+            $data['error_string'][] = 'Kategori Product harus di pilih';
             $data['status'] = FALSE;
         }
 

@@ -40,6 +40,8 @@
             <div class="collapse" id="collapseOrder" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
                     <a class="nav-link" href="<?= site_url('auth/order') ?>"> <div class="sb-nav-link-icon"><i class="fas fa-cash-register"></i></div> Order Product </a>
+
+                    <a class="nav-link" href="<?= site_url('auth/order/data_transaksi') ?>"> <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div> Data Transaksi </a>
                 </nav>
             </div>
 

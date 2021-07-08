@@ -129,7 +129,7 @@
               <select name="id_product" id="product-order" class="form-control">
                 <option value="" selected disabled>- Choose Product -</option>
                  <?php foreach($product as $data): ?>
-                  <option data-price="<?= $data->price ?>" value="<?= $data->id_product ?>"><?= $data->name; ?></option>
+                  <option data-name="<?= $data->name; ?>" data-price="<?= $data->price ?>" value="<?= $data->id_product ?>"><?= $data->name; ?></option>
                  <?php endforeach; ?>
               </select>
               <div class="invalid-feedback">
@@ -154,8 +154,8 @@
             </div>
 
             <div class="form-group">
-                <label for="subtotal-order">Subtotal <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" name="subtotal" id="subtotal-order" placeholder="Subtotal.." readonly>
+                <label for="total-order">Total <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" name="total" id="total-order" placeholder="Total.." readonly>
               <div class="invalid-feedback">
                   
               </div>

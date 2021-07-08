@@ -66,8 +66,9 @@
                                                 <th>Name Product</th>
                                                 <th>Quantity</th>
                                                 <th>Price</th>
-                                                <th>Subtotal</th>
-                                                <th width="20%" >Action</th>
+                                                <th>Total</th>
+                                                <th>User</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
 
@@ -116,7 +117,7 @@
             let productOrder    = $('#product-order');
             let qtyOrder        = $('#qty-order');
             let priceOrder      = $('#price-order');
-            let subtotalOrder   = $('#subtotal-order');
+            let totalOrder      = $('#total-order');
             // end selected option
 
             // let btnEdit = $('#btnEdit');
@@ -154,15 +155,15 @@
                     var displayProductOrder = $('#product-order option:selected').data('price');
 
                     priceOrder.val(displayProductOrder);
-                    subtotalOrder.val(displayProductOrder);
+                    totalOrder.val(displayProductOrder);
 
                     qtyOrder.keyup(function(){
                         var valueQtyOrder = qtyOrder.val();
                         var valuePriceOrder = priceOrder.val();
 
-                        var valueSubtotalOrder = valuePriceOrder * valueQtyOrder;
+                        var valueTotalOrder = valuePriceOrder * valueQtyOrder;
 
-                        subtotalOrder.val(valueSubtotalOrder);  
+                        totalOrder.val(valueTotalOrder);  
                     })
                 });
 
@@ -188,7 +189,7 @@
                     });
                 }
 
-                function deleteConfirm(id, name = 'Order') {
+                function deleteConfirm(id, name = 'order') {
                     Swal.fire({
                         title: 'Apakah anda yakin ?',
                         text: "akan menghapus data " + name,
@@ -199,6 +200,21 @@
                         }).then((result) => {
                         if (result.isConfirmed) {
                             deleteData(id);
+                        }
+                    })
+                }
+
+                function bayarOrderConfirm(id, name = 'order') {
+                    Swal.fire({
+                        title: 'Konfirmasi Bayar',
+                        text: "apakah anda ingin membayar " + name + " ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            bayarOrder(id);
                         }
                     })
                 }
@@ -298,14 +314,20 @@
                                 btnSaveModalOrder.text('Save');
                                 btnSaveModalOrder.attr('disabled', false);
                                 $('[name="id_order"]').val(response.id_order);
-                                $('[name="name"]').val(response.name);
-                                $('[name="description"]').val(response.description);
+                                $('[name="id_product"]').val(response.id_product).data('price');
+                                $('[name="qty"]').val(response.qty);
+                                $('[name="price"]').val(response.price);
+                                $('[name="total"]').val(response.total);
                                 modalAddOrder.modal('show');
 
                             }else if( type == 'delete' ) {
 
                                 deleteConfirm(response.id_order,response.name);
 
+                            }else if( type == 'bayar' ) {
+                                
+                                bayarOrderConfirm(response.id_order,response.name);
+                                
                             }
 
                         },
@@ -339,6 +361,24 @@
                             // console.log(response);
                             reloadTable();
                             message('success','Data Berhasi di Hapus');
+                        },
+                        error: function(){
+                            message('error','Server sedang ada gangguan, silahkan ulangi kembali');
+                        },
+                    });
+
+                }
+
+                function bayarOrder(id_order) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= base_url('auth/order/bayar/')?>" + id_order,
+                        dataType: "JSON",
+                        success: function (response) {
+                            // console.log(response);
+                            reloadTable();
+                            message('success','Transaksi Berhasil');
                         },
                         error: function(){
                             message('error','Server sedang ada gangguan, silahkan ulangi kembali');

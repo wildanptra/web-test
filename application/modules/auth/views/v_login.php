@@ -33,7 +33,7 @@
 
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" class="form-control" name="username" value="<?= set_value('username'); ?>" placeholder="Username or Password..">
+                        <input type="text" class="form-control" name="username" value="<?= set_value('username'); ?>" placeholder="Username or Email..">
                         <div class="form-text text-danger"><?= form_error('username'); ?></div>
                     </div>
 

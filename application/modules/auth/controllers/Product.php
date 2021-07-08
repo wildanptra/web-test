@@ -33,7 +33,7 @@ class Product extends NoAuth_Controller {
             $row[] = ++$no;
             $row[] = $result->name;
             $row[] = $result->description;
-            $row[] = $result->id_category;
+            $row[] = $result->name_category;
             $row[] = $result->stock;
             $row[] = number_format($result->price,0,',','.');
             $row[] = '

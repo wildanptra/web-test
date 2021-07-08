@@ -31,7 +31,7 @@ class Product_model extends NoAuth_Controller {
 
     public function _get_data_query()
     {
-        $this->db->select('tb_product.*,tb_product.name,tb_product.description,tb_category.id_category,stock,price');
+        $this->db->select('tb_product.*,tb_product.name,tb_product.description,tb_category.id_category,tb_category.name as name_category,stock,price');
         $this->db->from($this->table);
         $this->db->join('tb_category','tb_product.id_category = tb_category.id_category');
 

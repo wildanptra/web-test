@@ -25,7 +25,7 @@
 
                         <ol class="breadcrumb mb-4 mt-4">
                             <li class="breadcrumb-item"><a href="<?= site_url('auth/landing'); ?>">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Category</li>
+                            <li class="breadcrumb-item active">Product</li>
                         </ol>  
 
                         <?php if ($this->session->flashdata('message')) { ?>                
@@ -45,27 +45,29 @@
                             <div class="card mb-4">
 
                                 <div class="card-header">
-                                    <h4>Data Category</h4>
+                                    <h4>Data Product</h4>
                                 </div>
 
                                 <div class="card-body">
 
-
                                     <button type="button" class="btn btn-sm btn-primary mt-2 mb-4" onclick="add()">
-                                    <i class="fa fa-plus"></i> Add Category 
+                                    <i class="fa fa-plus"></i> Add Product 
                                     </button>
                                     <button type="button" class="btn btn-sm btn-secondary mt-2 mb-4" onclick="reloadTable()">
                                     <i class="fa fa-sync"></i> Reload 
                                     </button>
                                     
 
-                                    <table class="table table-striped table-bordered table-hover" id="table-category" width="100%">
+                                    <table class="table table-striped table-bordered table-hover" id="table-product" width="100%">
                                         
                                         <thead>
                                             <tr>
                                                 <th>#</th>
                                                 <th>Name</th>
                                                 <th>Description</th>
+                                                <th>Category</th>
+                                                <th>Stock</th>
+                                                <th>Price</th>
                                                 <th width="20%" >Action</th>
                                             </tr>
                                         </thead>
@@ -103,32 +105,32 @@
         <script>
 
             let saveData;
-            let modalAddCategory = $('#modalAddCategory');
-            let tableCategory = $('#table-category');
-            let formAddCategory = $('#formAddCategory');
-            let modalTitle = $('#modalTitle');
-            let closeModal = $('#closeModal');
-            let btnCloseModal = $('#btnCloseModal');
-            let btnSaveModal= $('#btnSaveModal');
+            let modalAddProduct = $('#modalAddProduct');
+            let tableProduct = $('#table-product');
+            let formAddProduct = $('#formAddProduct');
+            let modalTitleProduct = $('#modalTitleProduct');
+            let closeModalProduct = $('#closeModalProduct');
+            let btnCloseModalProduct = $('#btnCloseModalProduct');
+            let btnSaveModalProduct= $('#btnSaveModalProduct');
             // let btnEdit = $('#btnEdit');
 
             $(document).ready(function(){
 
-                tableCategory.DataTable({
+                tableProduct.DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "order" : [],
                     "ajax": {
-                        "url" : "<?= site_url('auth/category/getData')?>",
+                        "url" : "<?= site_url('auth/product/getData')?>",
                         "type" : "POST",
                     },
                     "columnDefs": [
                         { 
-                            "targets": [0 ,3],
+                            "targets": [0 ,6],
                             "orderable": false,
                         },
                         {
-                            "targets" : [0,1,2,3],
+                            "targets" : [0,1,2,3,4,5,6],
                             "className" : "text-center",
                         }
                     ],
@@ -136,18 +138,18 @@
 
             });
 
-                closeModal.click(function(){
-                    modalAddCategory.modal('hide');
+                closeModalProduct.click(function(){
+                    modalAddProduct.modal('hide');
                 });
 
-                btnCloseModal.click(function(){
-                    modalAddCategory.modal('hide');
+                btnCloseModalProduct.click(function(){
+                    modalAddProduct.modal('hide');
                 });
 
                 function message(icon, text) {
                     Swal.fire({
                         icon: icon,
-                        title: 'Data Category',
+                        title: 'Data Product',
                         text: text,
                         showCancelButton : false,
                         showCloseButton: false,
@@ -156,7 +158,7 @@
                     });
                 }
 
-                function deleteConfirm(id, name = 'Category') {
+                function deleteConfirm(id, name = 'Product') {
                     Swal.fire({
                         title: 'Apakah anda yakin ?',
                         text: "akan menghapus data " + name,
@@ -172,35 +174,35 @@
                 }
 
                 function reloadTable() {
-                    tableCategory.DataTable().ajax.reload();
+                    tableProduct.DataTable().ajax.reload();
                 }
 
                 function add() {
                     saveData = 'add';
-                    formAddCategory[0].reset();
-                    modalAddCategory.modal('show');
-                    modalTitle.text('Form Add Category');
+                    formAddProduct[0].reset();
+                    modalAddProduct.modal('show');
+                    modalTitleProduct.text('Form Add Product');
                 }
 
                 function save() {
                     
-                    btnSaveModal.text('Mohon tunggu...');
-                    btnSaveModal.attr('disabled', true);
+                    btnSaveModalProduct.text('Mohon tunggu...');
+                    btnSaveModalProduct.attr('disabled', true);
 
                     if( saveData == 'add' ) {
-                        url = "<?= site_url('auth/category/create') ?>";
+                        url = "<?= site_url('auth/product/create') ?>";
                     }else if( saveData == 'edit' ) {
-                        url = "<?= site_url('auth/category/update') ?>";
+                        url = "<?= site_url('auth/product/update') ?>";
                     }
 
                     $.ajax({
                         type: 'POST',
                         url: url,
-                        data: formAddCategory.serialize(),
+                        data: formAddProduct.serialize(),
                         dataType: "json",
                         success: function(response) {
                             if(response.status == 'sukses') {
-                                modalAddCategory.modal('hide');
+                                modalAddProduct.modal('hide');
                                 reloadTable();
                                 if( saveData == 'add' ) {
                                     message('success','Data Berhasil di Tambah');
@@ -217,20 +219,20 @@
                             }
 
                             if(saveData == 'add'){
-                                btnSaveModal.text('Save');
-                                btnSaveModal.attr('disabled', false);
+                                btnSaveModalProduct.text('Save');
+                                btnSaveModalProduct.attr('disabled', false);
                             }
 
                             
                             if(saveData == 'edit'){
-                                btnSaveModal.text('Save');
-                                btnSaveModal.attr('disabled', false);
+                                btnSaveModalProduct.text('Save');
+                                btnSaveModalProduct.attr('disabled', false);
                             }
 
                         },
                         error : function() {
                             message('error','Server sedang ada gangguan, silahkan ulangi kembali');
-
+                            
                             if(saveData == 'add'){
                                 btnSaveModalOrder.text('Save');
                                 btnSaveModalOrder.attr('disabled', false);
@@ -246,38 +248,42 @@
 
                 }
 
-                function byid(id_category, type) {
+                function byid(id_product, type) {
 
                     if( type == 'edit' ) {
                         saveData = 'edit';
-                        formAddCategory[0].reset();
+                        formAddProduct[0].reset();
                     }
 
                     $.ajax({
                         type : 'GET',
-                        url: "<?= site_url('auth/category/byid/') ?>" + id_category,
+                        url: "<?= site_url('auth/product/byid/') ?>" + id_product,
                         dataType: "json",
                         success : function(response){
-                            // kalau error cek dulu di console pake console.log(response);
                             
                             if( type == 'edit' ) {
-                                formAddCategory.find('input').removeClass('is-invalid');
-                                modalTitle.text('Form Edit Category');
-                                btnSaveModal.text('Save');
-                                btnSaveModal.attr('disabled', false);
-                                $('[name="id_category"]').val(response.id_category);
+                    
+                                formAddProduct.find('input').removeClass('is-invalid');
+                                modalTitleProduct.text('Form Edit Product');
+                                btnSaveModalProduct.text('Save');
+                                btnSaveModalProduct.attr('disabled', false);
+                                $('[name="id_product"]').val(response.id_product);
                                 $('[name="name"]').val(response.name);
                                 $('[name="description"]').val(response.description);
-                                modalAddCategory.modal('show');
+                                $('[name="id_category"]').val(response.id_category);
+                                $('[name="stock"]').val(response.stock);
+                                $('[name="price"]').val(response.price);
+                                modalAddProduct.modal('show');
 
                             }else if( type == 'delete' ) {
 
-                                deleteConfirm(response.id_category,response.name);
+                                deleteConfirm(response.id_product,response.name);
 
                             }
 
                         },
                         error: function(){
+
                             message('error','Server sedang ada gangguan, silahkan ulangi kembali');
 
                             if(saveData == 'add'){
@@ -296,14 +302,13 @@
 
                 }
 
-                function deleteData(id_category) {
+                function deleteData(id_product) {
 
                     $.ajax({
                         type: "POST",
-                        url: "<?= base_url('auth/category/delete/')?>" + id_category,
+                        url: "<?= base_url('auth/product/delete/')?>" + id_product,
                         dataType: "JSON",
                         success: function (response) {
-                            // console.log(response);
                             reloadTable();
                             message('success','Data Berhasi di Hapus');
                         },

@@ -2,7 +2,7 @@
 
 class Category extends NoAuth_Controller {
 
-    public function __constuct()
+    public function __construct()
     {
         parent::__construct();
         $this->load->model('login_model');
@@ -14,33 +14,51 @@ class Category extends NoAuth_Controller {
         $this->load->model('category_model');
 
         $data['judul'] = 'Web Test - Category';
-        $data['category'] = $this->category_model->getAllCategory();
 
         $this->load->view('v_category', $data);
     }
 
-    public function get_json()
-    {
-        $this->load->library('datatables');
-        $this->datatables->add_column('no','ID-$1','id_category');
-        $this->datatables->select('id_category','name','description');
-        $this->datatables->add_column('action', anchor(site_url('auth/category/edit/$1')),'Update', array('class' => 'btn btn-sm btn-success')) ." ". anchor(site_url('auth/category/delete/$1','Delete', array('class' => 'btn btn-sm btn-danger','onclick' => 'return confirm(\' Data Yakin di Hapus? \')')),'id_category');
-        $this->datatables->from('tb_category');
-        return print_r($this->datatables->generate());
+    public function getData()
+    {   
+        $this->load->model('category_model');
+
+        $results = $this->category_model->getDataTable();
+        $data = [];
+        $no = $_POST['start'];
+        foreach( $results as $result ){
+            $row = array();
+            $row[] = ++$no;
+            $row[] = $result->name;
+            $row[] = $result->description;
+            $row[] = '
+                <a href="#" class="btn btn-primary btn-sm" onclick="byid(' . "'" . $result->id_category. "','edit'" . ')"><i class="fa fa-edit"></i> Edit</a> 
+                <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_category. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a> 
+            ';
+            $data[] = $row;
+        }
+
+        $output = array(
+            'draw' => $_POST['draw'],
+            'recordsTotal' => $this->category_model->count_all_data(),
+            'recordsFiltered' => $this->category_model->count_filter_data(),
+            'data' => $data,
+        );
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($output));
+
     }
+
 
     public function create()
     {
         $this->load->model('category_model');
-        $this->load->library('form_validation');
 
-        $this->form_validation->set_rules('name', 'Name', 'required');
-        $this->form_validation->set_rules('description', 'Description');
+        $this->_validation();
 
         $table = 'tb_category';
 
-        $name                       = $this->input->post('name');
-        $description                = $this->input->post('description');
+        $name                       = $this->input->post('name', true);
+        $description                = $this->input->post('description', true);
 
         $data_category = [
 
@@ -51,9 +69,94 @@ class Category extends NoAuth_Controller {
 
         if($this->category_model->insertCategory($table,$data_category)){
 
-            $this->session->set_flashdata('message','Data Berhasil di Tambah');
-            redirect(site_url('auth/category'));
+            $message['status'] = 'sukses';
 
+        }else {
+
+            $message['status'] = 'gagal';
+
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($message));
+        
+    }
+
+    public function byid($id_category)
+    {
+        $this->load->model('category_model');
+        $data = $this->category_model->getDataById($id_category);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    public function update()
+    {
+        $this->load->model('category_model');
+
+        $this->_validation();
+
+        $name                       = $this->input->post('name', true);
+        $description                = $this->input->post('description', true);
+
+        $data_category = [
+
+            'name'          => $name,
+            'description'   => $description
+
+        ];
+
+        if($this->category_model->updateCategory(array('id_category' => $this->input->post('id_category')),$data_category) >= 0){
+
+            $message['status'] = 'sukses';
+
+        }else {
+
+            $message['status'] = 'gagal';
+
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($message));
+    }
+
+    public function delete($id_category)
+    {
+        $this->load->model('category_model');
+
+        if($this->category_model->deleteCategory($id_category)) {
+
+            $message['status'] = 'sukses';
+
+        }else {
+
+            $message['status'] = 'gagal';
+
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($message));
+    }
+
+    private function _validation() 
+    {
+
+        $data = [];
+        $data['error_string'] = [];
+        $data['inputerror'] = [];
+        $data['status'] = true;
+
+        if($this->input->post('name') == '') {
+            $data['inputerror'][] = 'name';
+            $data['error_string'][] = 'Nama Category harus di isi';
+            $data['status'] = false;
+        }
+
+        // if($this->input->post('description') == '') {
+        //     $data['inputerror'][] = 'description';
+        //     $data['error_string'][] = 'Description Category harus di isi';
+        //     $data['status'] = FALSE;
+        // }
+
+        if($data['status'] == false) {
+            echo json_encode($data);
+            exit();
         }
     }
 

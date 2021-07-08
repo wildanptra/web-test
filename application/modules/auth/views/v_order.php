@@ -25,7 +25,7 @@
 
                         <ol class="breadcrumb mb-4 mt-4">
                             <li class="breadcrumb-item"><a href="<?= site_url('auth/landing'); ?>">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Category</li>
+                            <li class="breadcrumb-item active">Order</li>
                         </ol>  
 
                         <?php if ($this->session->flashdata('message')) { ?>                
@@ -37,7 +37,6 @@
                             </div>
                         <?php } ?>
 
-                        <div id="infoValidasi"></div>
                     
                         <div class="row">
                             <div class="col-md-12">
@@ -45,27 +44,29 @@
                             <div class="card mb-4">
 
                                 <div class="card-header">
-                                    <h4>Data Category</h4>
+                                    <h4>Order Product</h4>
                                 </div>
 
                                 <div class="card-body">
 
-
                                     <button type="button" class="btn btn-sm btn-primary mt-2 mb-4" onclick="add()">
-                                    <i class="fa fa-plus"></i> Add Category 
+                                        <i class="fa fa-plus"></i> Add Order 
                                     </button>
+
                                     <button type="button" class="btn btn-sm btn-secondary mt-2 mb-4" onclick="reloadTable()">
                                     <i class="fa fa-sync"></i> Reload 
                                     </button>
                                     
 
-                                    <table class="table table-striped table-bordered table-hover" id="table-category" width="100%">
+                                    <table class="table table-striped table-bordered table-hover" id="table-order" width="100%">
                                         
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Name</th>
-                                                <th>Description</th>
+                                                <th>Name Product</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Subtotal</th>
                                                 <th width="20%" >Action</th>
                                             </tr>
                                         </thead>
@@ -103,51 +104,82 @@
         <script>
 
             let saveData;
-            let modalAddCategory = $('#modalAddCategory');
-            let tableCategory = $('#table-category');
-            let formAddCategory = $('#formAddCategory');
-            let modalTitle = $('#modalTitle');
-            let closeModal = $('#closeModal');
-            let btnCloseModal = $('#btnCloseModal');
-            let btnSaveModal= $('#btnSaveModal');
+            let modalAddOrder = $('#modalAddOrder');
+            let tableOrder = $('#table-order');
+            let formAddOrder = $('#formAddOrder');
+            let modalTitleOrder = $('#modalTitleOrder');
+            let closeModalOrder = $('#closeModalOrder');
+            let btnCloseModalOrder = $('#btnCloseModalOrder');
+            let btnSaveModalOrder= $('#btnSaveModalOrder');
+
+            // selected option
+            let productOrder    = $('#product-order');
+            let qtyOrder        = $('#qty-order');
+            let priceOrder      = $('#price-order');
+            let subtotalOrder   = $('#subtotal-order');
+            // end selected option
+
             // let btnEdit = $('#btnEdit');
 
             $(document).ready(function(){
 
-                tableCategory.DataTable({
+                tableOrder.DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "order" : [],
                     "ajax": {
-                        "url" : "<?= site_url('auth/category/getData')?>",
+                        "url" : "<?= site_url('auth/order/getData')?>",
                         "type" : "POST",
                     },
                     "columnDefs": [
                         { 
                             "targets": [0 ,3],
-                            "orderable": false,
+                            "orderable": true,
                         },
                         {
-                            "targets" : [0,1,2,3],
-                            "className" : "text-center",
+                            "targets" : [1,2,3,4,5],
                         }
                     ],
+                    "language": {
+                        "zeroRecords": "Belum ada order, silahkan tambah order terlebih dahulu.",
+                        "infoEmpty": "No records available"
+                    }
                 })
 
             });
 
-                closeModal.click(function(){
-                    modalAddCategory.modal('hide');
+            $(document).ready(function(){
+
+                productOrder.change(function(){
+                    var displayProductOrder = $('#product-order option:selected').data('price');
+
+                    priceOrder.val(displayProductOrder);
+                    subtotalOrder.val(displayProductOrder);
+
+                    qtyOrder.keyup(function(){
+                        var valueQtyOrder = qtyOrder.val();
+                        var valuePriceOrder = priceOrder.val();
+
+                        var valueSubtotalOrder = valuePriceOrder * valueQtyOrder;
+
+                        subtotalOrder.val(valueSubtotalOrder);  
+                    })
                 });
 
-                btnCloseModal.click(function(){
-                    modalAddCategory.modal('hide');
+            });
+
+                closeModalOrder.click(function(){
+                    modalAddOrder.modal('hide');
+                });
+
+                btnCloseModalOrder.click(function(){
+                    modalAddOrder.modal('hide');
                 });
 
                 function message(icon, text) {
                     Swal.fire({
                         icon: icon,
-                        title: 'Data Category',
+                        title: 'Data Order',
                         text: text,
                         showCancelButton : false,
                         showCloseButton: false,
@@ -156,7 +188,7 @@
                     });
                 }
 
-                function deleteConfirm(id, name = 'Category') {
+                function deleteConfirm(id, name = 'Order') {
                     Swal.fire({
                         title: 'Apakah anda yakin ?',
                         text: "akan menghapus data " + name,
@@ -172,35 +204,35 @@
                 }
 
                 function reloadTable() {
-                    tableCategory.DataTable().ajax.reload();
+                    tableOrder.DataTable().ajax.reload();
                 }
 
                 function add() {
                     saveData = 'add';
-                    formAddCategory[0].reset();
-                    modalAddCategory.modal('show');
-                    modalTitle.text('Form Add Category');
+                    formAddOrder[0].reset();
+                    modalAddOrder.modal('show');
+                    modalTitleOrder.text('Form Add Order');
                 }
 
                 function save() {
                     
-                    btnSaveModal.text('Mohon tunggu...');
-                    btnSaveModal.attr('disabled', true);
+                    btnSaveModalOrder.text('Mohon tunggu...');
+                    btnSaveModalOrder.attr('disabled', true);
 
                     if( saveData == 'add' ) {
-                        url = "<?= site_url('auth/category/create') ?>";
+                        url = "<?= site_url('auth/order/create') ?>";
                     }else if( saveData == 'edit' ) {
-                        url = "<?= site_url('auth/category/update') ?>";
+                        url = "<?= site_url('auth/order/update') ?>";
                     }
 
                     $.ajax({
                         type: 'POST',
                         url: url,
-                        data: formAddCategory.serialize(),
+                        data: formAddOrder.serialize(),
                         dataType: "json",
                         success: function(response) {
                             if(response.status == 'sukses') {
-                                modalAddCategory.modal('hide');
+                                modalAddOrder.modal('hide');
                                 reloadTable();
                                 if( saveData == 'add' ) {
                                     message('success','Data Berhasil di Tambah');
@@ -217,14 +249,14 @@
                             }
 
                             if(saveData == 'add'){
-                                btnSaveModal.text('Save');
-                                btnSaveModal.attr('disabled', false);
+                                btnSaveModalOrder.text('Save');
+                                btnSaveModalOrder.attr('disabled', false);
                             }
 
                             
                             if(saveData == 'edit'){
-                                btnSaveModal.text('Save');
-                                btnSaveModal.attr('disabled', false);
+                                btnSaveModalOrder.text('Save');
+                                btnSaveModalOrder.attr('disabled', false);
                             }
 
                         },
@@ -246,33 +278,33 @@
 
                 }
 
-                function byid(id_category, type) {
+                function byid(id_order, type) {
 
                     if( type == 'edit' ) {
                         saveData = 'edit';
-                        formAddCategory[0].reset();
+                        formAddOrder[0].reset();
                     }
 
                     $.ajax({
                         type : 'GET',
-                        url: "<?= site_url('auth/category/byid/') ?>" + id_category,
+                        url: "<?= site_url('auth/order/byid/') ?>" + id_order,
                         dataType: "json",
                         success : function(response){
                             // kalau error cek dulu di console pake console.log(response);
                             
                             if( type == 'edit' ) {
-                                formAddCategory.find('input').removeClass('is-invalid');
-                                modalTitle.text('Form Edit Category');
-                                btnSaveModal.text('Save');
-                                btnSaveModal.attr('disabled', false);
-                                $('[name="id_category"]').val(response.id_category);
+                                formAddOrder.find('input').removeClass('is-invalid');
+                                modalTitleOrder.text('Form Edit Order');
+                                btnSaveModalOrder.text('Save');
+                                btnSaveModalOrder.attr('disabled', false);
+                                $('[name="id_order"]').val(response.id_order);
                                 $('[name="name"]').val(response.name);
                                 $('[name="description"]').val(response.description);
-                                modalAddCategory.modal('show');
+                                modalAddOrder.modal('show');
 
                             }else if( type == 'delete' ) {
 
-                                deleteConfirm(response.id_category,response.name);
+                                deleteConfirm(response.id_order,response.name);
 
                             }
 
@@ -290,17 +322,18 @@
                                 btnSaveModalOrder.text('Save');
                                 btnSaveModalOrder.attr('disabled', false);
                             }
+
                         },
 
                     });
 
                 }
 
-                function deleteData(id_category) {
+                function deleteData(id_order) {
 
                     $.ajax({
                         type: "POST",
-                        url: "<?= base_url('auth/category/delete/')?>" + id_category,
+                        url: "<?= base_url('auth/order/delete/')?>" + id_order,
                         dataType: "JSON",
                         success: function (response) {
                             // console.log(response);

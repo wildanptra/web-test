@@ -133,12 +133,9 @@
                     },
                     "columnDefs": [
                         { 
-                            "targets": [0 ,3],
-                            "shipmentable": true,
+                            "targets": [0,5],
+                            "orderable": false,
                         },
-                        {
-                            "targets" : [1,2,3,4,5],
-                        }
                     ],
                     "language": {
                         "zeroRecords": "Belum ada shipment, silahkan tambah shipment terlebih dahulu.",
@@ -293,10 +290,9 @@
                                 btnSaveModalShipment.text('Save');
                                 btnSaveModalShipment.attr('disabled', false);
                                 $('[name="id_shipment"]').val(response.id_shipment);
-                                $('[name="id_product"]').val(response.id_product).data('price');
-                                $('[name="qty"]').val(response.qty);
-                                $('[name="price"]').val(response.price);
-                                $('[name="total"]').val(response.total);
+                                $('[name="date_shipment"]').val(response.date_shipment);
+                                $('[name="address"]').val(response.address);
+                                $('[name="courier_name"]').val(response.courier_name);
                                 modalAddShipment.modal('show');
 
                             }else if( type == 'delete' ) {

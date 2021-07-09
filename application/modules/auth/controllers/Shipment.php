@@ -33,13 +33,13 @@ class Shipment extends NoAuth_Controller {
         foreach( $results as $result ){
                 $row = array();
                 $row[] = ++$no;
-                $row[] = $result->date_shipment;
+                $row[] = $this->tgl_indo($result->date_shipment);
                 $row[] = $result->address;
                 $row[] = $result->courier_name;
                 $row[] = $result->status_shipment;
                 $row[] = '
-                    <a href="#" class="btn btn-primary btn-sm" onclick="byid(' . "'" . $result->id_shipment. "','edit'" . ')"><i class="fa fa-edit"></i> Edit</a>
-                    <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_shipment. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a>
+                    <a href="#" class="btn btn-primary btn-sm" onclick="byid(' . "'" . $result->id_shipment . "','edit'" . ')"><i class="fa fa-edit"></i> Edit</a>
+                    <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_shipment . "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a>
                 ';
                 $data[] = $row;
         }
@@ -67,7 +67,7 @@ class Shipment extends NoAuth_Controller {
 
         $table = 'tb_shipment';
 
-        $date_shipment          = $this->input->post('date_shipment')." ".date('H:i:s');
+        $date_shipment          = $this->input->post('date_shipment');
         $address                = $this->input->post('address');
         $courier_name           = $this->input->post('courier_name');
 
@@ -88,10 +88,74 @@ class Shipment extends NoAuth_Controller {
             $message['status']  = 'gagal';
 
         }
-
+        
         $this->output->set_content_type('application/json')->set_output(json_encode($message));
 
     }
+
+    public function update()
+    {
+        $this->load->model('product_model');
+        $this->load->model('category_model');
+        $this->load->model('order_model');
+        $this->load->model('shipment_model');
+
+        $this->_validation();
+
+        $date_shipment          = $this->input->post('date_shipment');
+        $address                = $this->input->post('address');
+        $courier_name           = $this->input->post('courier_name');
+
+        $data_shipment = [
+
+            'date_shipment'     => $date_shipment,
+            'address'           => $address,
+            'courier_name'      => $courier_name,
+
+        ];
+
+        if($this->shipment_model->updateShipment(array('id_shipment' => $this->input->post('id_shipment')),$data_shipment) >= 0){
+
+            $message['status'] = 'sukses';
+
+        }else {
+
+            $message['status'] = 'gagal';
+
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($message));
+    }
+
+    public function delete($id_shipment)
+    {
+        $this->load->model('shipment_model');
+
+        if($this->shipment_model->deleteShipment($id_shipment)) {
+
+            $message['status'] = 'sukses';
+
+        }else {
+
+            $message['status'] = 'gagal';
+
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($message));
+    }
+
+    public function byid($id_shipment)
+    {
+        $this->load->model('product_model');
+        $this->load->model('category_model');
+        $this->load->model('order_model');
+        $this->load->model('shipment_model');
+
+        $data = $this->shipment_model->getDataById($id_shipment);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    
 
     private function _validation() 
     {
@@ -123,6 +187,30 @@ class Shipment extends NoAuth_Controller {
             echo json_encode($data);
             exit();
         }
+    }
+
+    public function tgl_indo($tanggal){
+        $bulan = array (
+            1 =>   'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        );
+        $pecahkan = explode('-', $tanggal);
+        
+        // variabel pecahkan 0 = tanggal
+        // variabel pecahkan 1 = bulan
+        // variabel pecahkan 2 = tahun
+     
+        return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
     }
 
 }

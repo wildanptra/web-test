@@ -52,7 +52,7 @@ class Shipment_model extends NoAuth_Controller {
 
         } else {
 
-            $this->db->order_by('tb_shipment.id_shipment','DESC');
+            $this->db->order_by('tb_order.id_order','DESC');
 
         }
     }

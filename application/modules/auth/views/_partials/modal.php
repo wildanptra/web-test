@@ -171,3 +171,53 @@
   </div>
 </div>
 <!-- End Modal Order -->
+
+<!-- Modal Add Shipment -->
+<div class="modal fade" id="modalAddShipment" tabindex="-1" aria-labelledby="modalAddShipmentLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitleShipment"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeModalShipment">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body form">
+
+        <form action="<?= site_url('auth/shipment/create') ?>" method="post" id="formAddShipment">
+            <input type="hidden" name="id_shipment" id="id_shipment" value="">
+
+            <div class="form-group">
+              <label for="date-shipment-shipment">Date Shipment <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" name="date_shipment" id="date-shipment">
+              <div class="invalid-feedback">
+                  
+              </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address-shipment">Address Shipment</label>
+                <textarea name="address" class="form-control" id="address-shipment" rows="5" placeholder="Address Shipment.."></textarea>
+                <div class="invalid-feedback">
+                  
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="courier-shipment">Courier Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="courier_name" id="courier-shipment" placeholder="Courier Name..">
+              <div class="invalid-feedback">
+                  
+              </div>
+            </div>
+
+            <div class="float-right">
+                <button type="submit" class="btn btn-primary btn-sm" value="submit" id="btnSaveModalShipment" onclick="save()" >Save</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" id="btnCloseModalShipment">Close</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Shipment -->

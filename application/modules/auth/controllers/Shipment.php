@@ -18,15 +18,56 @@ class Shipment extends NoAuth_Controller {
         $this->load->view('v_shipment',$data);
     }
 
+    public function getData()
+    {   
+        $this->load->model('product_model');
+        $this->load->model('category_model');
+        $this->load->model('order_model');
+        $this->load->model('shipment_model');
+
+        $results = $this->shipment_model->getDataTable();
+        $data = [];
+        $no = $_POST['start'];
+        
+
+        foreach( $results as $result ){
+                $row = array();
+                $row[] = ++$no;
+                $row[] = $result->date_shipment;
+                $row[] = $result->address;
+                $row[] = $result->courier_name;
+                $row[] = $result->status_shipment;
+                $row[] = '
+                    <a href="#" class="btn btn-primary btn-sm" onclick="byid(' . "'" . $result->id_shipment. "','edit'" . ')"><i class="fa fa-edit"></i> Edit</a>
+                    <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_shipment. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a>
+                ';
+                $data[] = $row;
+        }
+
+        $output = array(
+            'draw' => $_POST['draw'],
+            'recordsTotal' => $this->shipment_model->count_all_data(),
+            'recordsFiltered' => $this->shipment_model->count_filter_data(),
+            'data' => $data,
+        );
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($output));
+
+
+    }
+
     public function create()
     {
+        $this->load->model('product_model');
+        $this->load->model('category_model');
+        $this->load->model('order_model');
         $this->load->model('shipment_model');
 
         $this->_validation();
 
         $table = 'tb_shipment';
 
-        $date_shipment          = date('Y-m-d H:i:s');
+        $date_shipment          = $this->input->post('date_shipment')." ".date('H:i:s');
         $address                = $this->input->post('address');
         $courier_name           = $this->input->post('courier_name');
 
@@ -35,8 +76,7 @@ class Shipment extends NoAuth_Controller {
 
             'date_shipment'     => $date_shipment,
             'address'           => $address,
-            'courier_name'      => $courier_name,
-            
+            'courier_name'      => $courier_name,         
         ];
 
         if($this->shipment_model->insertShipment($table,$data_shipment)) {

@@ -8,7 +8,7 @@ class Order_model extends NoAuth_Controller {
 
     public function getOrder()
     {
-        $this->db->select('tb_order.*,tb_product.id_product,tb_product.name as name_product,tb_product.description as description_product,tb_product.price as price_product,tb_order.qty,tb_order.price,tb_order.total,tb_users.user_id,tb_users.username as username_user,tb_order.status_order,tb_order.tanggal_transaksi');
+        $this->db->select('tb_order.*,tb_product.id_product,tb_product.name as name_product,tb_product.description as description_product,tb_product.stock as stock_product,tb_product.price as price_product,tb_order.qty,tb_order.price,tb_order.total,tb_users.user_id,tb_users.username as username_user,tb_order.status_order,tb_order.tanggal_transaksi');
         $this->db->from($this->table);
         $this->db->join('tb_product','tb_order.id_product = tb_product.id_product');
         $this->db->join('tb_users','tb_order.user_id = tb_users.user_id');
@@ -46,7 +46,7 @@ class Order_model extends NoAuth_Controller {
 
     public function _get_data_query()
     {
-        $this->db->select('tb_order.*,tb_product.id_product,tb_product.name as name_product,tb_product.description as description_product,tb_product.price as price_product,tb_order.qty,tb_order.price,tb_order.total,tb_users.user_id,tb_users.username as username_user,tb_order.status_order,tb_order.tanggal_transaksi')
+        $this->db->select('tb_order.*,tb_product.id_product,tb_product.name as name_product,tb_product.description as description_product,tb_product.stock as stock_product,tb_product.price as price_product,tb_order.qty,tb_order.price,tb_order.total,tb_users.user_id,tb_users.username as username_user,tb_order.status_order,tb_order.tanggal_transaksi')
         ->from($this->table)
         ->join('tb_product','tb_order.id_product = tb_product.id_product')
         ->join('tb_users','tb_order.user_id = tb_users.user_id');

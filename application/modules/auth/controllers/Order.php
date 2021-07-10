@@ -100,6 +100,9 @@ class Order extends NoAuth_Controller {
                 $row[] = $result->qty;
                 $row[] = number_format($result->price,0,',','.');
                 $row[] = number_format($result->total,0,',','.');
+                $row[] = '
+                    <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_order. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a>
+                ';
                 $data[] = $row;
             }
         }

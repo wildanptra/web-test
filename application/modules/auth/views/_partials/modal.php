@@ -53,13 +53,6 @@
 
         <form action="<?= site_url('auth/product/create') ?>" method="post" id="formAddProduct">
             <input type="hidden" name="id_product" id="id_product" value="">
-            <div class="form-group">
-                <label for="name-product">Name Product <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="name" id="name-product" placeholder="Name Product..">
-                <div class="invalid-feedback">
-                  
-                </div>
-            </div>
 
             <div class="form-group">
               <label for="category-product">Category <span class="text-danger">*</span></label>
@@ -72,6 +65,14 @@
               <div class="invalid-feedback">
                   
               </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="name-product">Name Product <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="name" id="name-product" placeholder="Name Product..">
+                <div class="invalid-feedback">
+                  
+                </div>
             </div>
 
             <div class="form-group">
@@ -129,7 +130,9 @@
               <select name="id_product" id="product-order" class="form-control">
                 <option value="" selected disabled>- Choose Product -</option>
                  <?php foreach($product as $data): ?>
-                  <option data-name="<?= $data->name; ?>" data-price="<?= $data->price ?>" value="<?= $data->id_product ?>"><?= $data->name; ?></option>
+                    <?php if($data->stock != 0): ?>
+                    <option data-name="<?= $data->name; ?>" data-price="<?= $data->price ?>" value="<?= $data->id_product ?>"><?= $data->name; ?></option>
+                    <?php endif; ?>
                  <?php endforeach; ?>
               </select>
               <div class="invalid-feedback">

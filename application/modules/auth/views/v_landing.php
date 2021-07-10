@@ -85,7 +85,7 @@
                                 <div class="card bg-danger text-white mb-4" style="height: 150px;">
                                 <div class="card-body">
                                         <h4>Shipment</h4>
-                                        <p>0 Data Shipment</p>
+                                        <p><?= $this->db->count_all_results('tb_shipment'); ?> Data Shipment</p>
                                     </div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link" href="<?= base_url('auth/landing') ?>">See Details</a>

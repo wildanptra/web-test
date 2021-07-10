@@ -66,6 +66,7 @@
                                                 <th>Quantity</th>
                                                 <th>Price</th>
                                                 <th>Total</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
 
@@ -146,10 +147,112 @@
 
             });
 
+            function message(icon, text) {
+                    Swal.fire({
+                        icon: icon,
+                        title: 'Data Transaksi',
+                        text: text,
+                        showCancelButton : false,
+                        showCloseButton: false,
+                        timer: 3000,
+                        timerProgressBar : true,
+                    });
+                }
+
+                function deleteConfirm(id, name = 'transaksi') {
+                    Swal.fire({
+                        title: 'Apakah anda yakin ?',
+                        text: "akan menghapus data " + name,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            deleteData(id);
+                        }
+                    })
+                }
+
 
             function reloadTable() {
                 tableOrder.DataTable().ajax.reload();
             }
+
+            function byid(id_order, type) {
+
+                if( type == 'edit' ) {
+                    saveData = 'edit';
+                    formAddOrder[0].reset();
+                }
+
+                $.ajax({
+                    type : 'GET',
+                    url: "<?= site_url('auth/order/byid/') ?>" + id_order,
+                    dataType: "json",
+                    success : function(response){
+                        // kalau error cek dulu di console pake console.log(response);
+                        
+                        if( type == 'edit' ) {
+                            formAddOrder.find('input').removeClass('is-invalid');
+                            modalTitleOrder.text('Form Edit Order');
+                            btnSaveModalOrder.text('Save');
+                            btnSaveModalOrder.attr('disabled', false);
+                            $('[name="id_order"]').val(response.id_order);
+                            $('[name="id_product"]').val(response.id_product).data('price');
+                            $('[name="qty"]').val(response.qty);
+                            $('[name="price"]').val(response.price);
+                            $('[name="total"]').val(response.total);
+                            modalAddOrder.modal('show');
+
+                        }else if( type == 'delete' ) {
+
+                            deleteConfirm(response.id_order,response.name);
+
+                        }else if( type == 'bayar' ) {
+                            
+                            bayarOrderConfirm(response.id_order,response.name);
+                            
+                        }
+
+                    },
+                    error: function(){
+                        message('error','Server sedang ada gangguan, silahkan ulangi kembali');
+
+                        if(saveData == 'add'){
+                            btnSaveModalOrder.text('Save');
+                            btnSaveModalOrder.attr('disabled', false);
+                        }
+
+                        
+                        if(saveData == 'edit'){
+                            btnSaveModalOrder.text('Save');
+                            btnSaveModalOrder.attr('disabled', false);
+                        }
+
+                    },
+
+                });
+
+            }
+
+                function deleteData(id_order) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= base_url('auth/order/delete/')?>" + id_order,
+                        dataType: "JSON",
+                        success: function (response) {
+                            // console.log(response);
+                            reloadTable();
+                            message('success','Data Berhasi di Hapus');
+                        },
+                        error: function(){
+                            message('error','Server sedang ada gangguan, silahkan ulangi kembali');
+                        },
+                    });
+
+                }
 
 
             

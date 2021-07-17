@@ -20,6 +20,22 @@ class Product extends NoAuth_Controller {
         $this->load->view('v_product', $data);
     }
 
+    public function get_json()
+    {
+        $this->load->library('datatables');
+        $this->datatables->select('tb_product.*,tb_product.id_product,tb_product.name,tb_product.description,tb_category.id_category,tb_category.name as name_category,stock,price');
+        $this->datatables->from('tb_product');
+        $this->datatables->join('tb_category','tb_product.id_category = tb_category.id_category');
+        $this->datatables->add_column('no','ID-$1','id_product');
+        $this->datatables->add_column(
+            'action', 
+            '<a href="#" class="btn btn-primary btn-sm" onclick="byid($1,\'edit\')"><i class="fa fa-edit"></i> Edit</a>
+            <a href="#" class="btn btn-danger btn-sm" onclick="byid($1,\'delete\')"><i class="fa fa-trash"></i> Delete</a>',
+            'id_product'
+        );
+        return print_r($this->datatables->generate());
+    }
+
     public function getData()
     {   
         $this->load->model('product_model');

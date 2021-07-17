@@ -25,7 +25,8 @@
 
                         <ol class="breadcrumb mb-4 mt-4">
                             <li class="breadcrumb-item"><a href="<?= site_url('auth/landing'); ?>">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Product</li>
+                            <li class="breadcrumb-item"><a href="<?= site_url('auth/shipment'); ?>">Shipment</a></li>
+                            <li class="breadcrumb-item active">Shipment Order</li>
                         </ol>  
 
                         <?php if ($this->session->flashdata('message')) { ?>                
@@ -42,46 +43,48 @@
                         <div class="row">
                             <div class="col-md-12">
 
-                            <div class="card mb-4">
+                                <div class="card mb-4">
 
-                                <div class="card-header">
-                                    <h4>Shipment Order</h4>
+                                    <div class="card-header">
+                                        <h4>Data Shipment Order</h4>
+                                    </div>
+
+                                    <div class="card-body">
+
+
+                                            <button type="button" class="btn btn-sm btn-primary mt-2 mb-4" onclick="addShipmentOrder()">
+                                            <i class="fa fa-plus"></i> Add Shipment Order 
+                                            </button>
+
+                                            <button type="button" class="btn btn-sm btn-secondary mt-2 mb-4" onclick="reloadTable()">
+                                            <i class="fa fa-sync"></i> Reload 
+                                            </button>
+                                            
+
+                                            <table class="table table-striped table-bordered table-hover display nowrap" id="table-shipment-order" width="100%">
+                                                
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Consument Name</th>
+                                                        <!-- <th>Address</th> -->
+                                                        <th>Product</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                
+                                                </tbody>
+
+                                            </table>
+
+                                    </div>
+
                                 </div>
-
-                                <div class="card-body">
-
-                                    <button type="button" class="btn btn-sm btn-primary mt-2 mb-4" onclick="add()">
-                                    <i class="fa fa-plus"></i> Add Shipment Order 
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-secondary mt-2 mb-4" onclick="reloadTable()">
-                                    <i class="fa fa-sync"></i> Reload 
-                                    </button>
-                                    
-
-                                    <table class="table table-striped table-bordered table-hover" id="table-product" width="100%">
-                                        
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                                <th>Category</th>
-                                                <th>Stock</th>
-                                                <th>Price</th>
-                                                <th width="20%" >Action</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        
-                                        </tbody>
-
-                                    </table>
-
-                                </div>
-
-                            </div>
-                            
+                                
                             </div>
                         </div>
                     
@@ -95,6 +98,7 @@
                 <?php $this->load->view("_partials/footer.php") ?>
 
             </div>
+            
         </div>
 
         <!-- Js Location: (_partials/js.php) -->
@@ -105,51 +109,54 @@
         <script>
 
             let saveData;
-            let modalAddProduct = $('#modalAddProduct');
-            let tableProduct = $('#table-product');
-            let formAddProduct = $('#formAddProduct');
-            let modalTitleProduct = $('#modalTitleProduct');
-            let closeModalProduct = $('#closeModalProduct');
-            let btnCloseModalProduct = $('#btnCloseModalProduct');
-            let btnSaveModalProduct= $('#btnSaveModalProduct');
+            let modalAddShipmentOrder = $('#modalAddShipmentOrder');
+            let tableShipmentOrder = $('#table-shipment-order');
+            let formAddShipmentOrder = $('#formAddShipmentOrder');
+            let modalTitleShipmentOrder = $('#modalTitleShipmentOrder');
+            let closeModalShipmentOrder = $('#closeModalShipmentOrder');
+            let btnCloseModalShipmentOrder = $('#btnCloseModalShipmentOrder');
+            let btnSaveModalShipmentOrder= $('#btnSaveModalShipmentOrder');
             // let btnEdit = $('#btnEdit');
-
+                            
             $(document).ready(function(){
 
-                tableProduct.DataTable({
+                tableShipmentOrder.DataTable({
                     "processing" : true,
                     "serverSide" : true,
+                    "scrollX": false,
+                    "fixedColumns" : false,
+                    "searchHighights" : true,
                     "order" : [],
                     "ajax": {
-                        "url" : "<?= site_url('auth/product/getData')?>",
+                        "url" : "<?= site_url('auth/shipment_order/get_json')?>",
                         "type" : "POST",
                     },
-                    "columnDefs": [
-                        { 
-                            "targets": [0 ,6],
-                            "orderable": false,
-                        },
-                        {
-                            "targets" : [0,1,2,3,4,5,6],
-                            "className" : "text-center",
-                        }
+                    "columns": [
+                        { "data" : "no"},
+                        { "data" : "username_user"},
+                        // { "data" : "address_shipment"},
+                        { "data" : "name_product" },
+                        { "data" : "qty_order" },
+                        { "data" : "price_order" },
+                        { "data" : "total_order"},
                     ],
-                })
-
-            });
-
-                closeModalProduct.click(function(){
-                    modalAddProduct.modal('hide');
                 });
 
-                btnCloseModalProduct.click(function(){
-                    modalAddProduct.modal('hide');
+                // tableShipmentOrder.columns.adjust();
+            });
+
+            closeModalShipmentOrder.click(function(){
+                    modalAddShipmentOrder.modal('hide');
+                });
+
+                btnCloseModalShipmentOrder.click(function(){
+                    modalAddShipmentOrder.modal('hide');
                 });
 
                 function message(icon, text) {
                     Swal.fire({
                         icon: icon,
-                        title: 'Data Product',
+                        title: 'Data Shipment',
                         text: text,
                         showCancelButton : false,
                         showCloseButton: false,
@@ -158,7 +165,7 @@
                     });
                 }
 
-                function deleteConfirm(id, name = 'Product') {
+                function deleteConfirm(id, name = 'Shipment') {
                     Swal.fire({
                         title: 'Apakah anda yakin ?',
                         text: "akan menghapus data " + name,
@@ -177,32 +184,32 @@
                     tableProduct.DataTable().ajax.reload();
                 }
 
-                function add() {
+                function addShipmentOrder() {
                     saveData = 'add';
-                    formAddProduct[0].reset();
-                    modalAddProduct.modal('show');
-                    modalTitleProduct.text('Form Add Product');
+                    formAddShipmentOrder[0].reset();
+                    modalAddShipmentOrder.modal('show');
+                    modalTitleShipmentOrder.text('Form Add Shipment Order');
                 }
 
-                function save() {
+                function saveShipmentOrder() {
                     
-                    btnSaveModalProduct.text('Mohon tunggu...');
-                    btnSaveModalProduct.attr('disabled', true);
+                    btnSaveModalShipmentOrder.text('Mohon tunggu...');
+                    btnSaveModalShipmentOrder.attr('disabled', true);
 
                     if( saveData == 'add' ) {
-                        url = "<?= site_url('auth/product/create') ?>";
+                        url = "<?= site_url('auth/shipment_order/create') ?>";
                     }else if( saveData == 'edit' ) {
-                        url = "<?= site_url('auth/product/update') ?>";
+                        url = "<?= site_url('auth/shipment_order/update') ?>";
                     }
 
                     $.ajax({
                         type: 'POST',
                         url: url,
-                        data: formAddProduct.serialize(),
+                        data: formAddShipmentOrder.serialize(),
                         dataType: "json",
                         success: function(response) {
                             if(response.status == 'sukses') {
-                                modalAddProduct.modal('hide');
+                                modalAddShipmentOrder.modal('hide');
                                 reloadTable();
                                 if( saveData == 'add' ) {
                                     message('success','Data Berhasil di Tambah');
@@ -219,29 +226,29 @@
                             }
 
                             if(saveData == 'add'){
-                                btnSaveModalProduct.text('Save');
-                                btnSaveModalProduct.attr('disabled', false);
+                                btnSaveModalShipmentOrder.text('Save');
+                                btnSaveModalShipmentOrder.attr('disabled', false);
                             }
 
                             
                             if(saveData == 'edit'){
-                                btnSaveModalProduct.text('Save');
-                                btnSaveModalProduct.attr('disabled', false);
+                                btnSaveModalShipmentOrder.text('Save');
+                                btnSaveModalShipmentOrder.attr('disabled', false);
                             }
 
                         },
                         error : function() {
                             message('error','Server sedang ada gangguan, silahkan ulangi kembali');
-                            
+
                             if(saveData == 'add'){
-                                btnSaveModalOrder.text('Save');
-                                btnSaveModalOrder.attr('disabled', false);
+                                btnSaveModalShipmentOrder.text('Save');
+                                btnSaveModalShipmentOrder.attr('disabled', false);
                             }
 
                             
                             if(saveData == 'edit'){
-                                btnSaveModalOrder.text('Save');
-                                btnSaveModalOrder.attr('disabled', false);
+                                btnSaveModalShipmentOrder.text('Save');
+                                btnSaveModalShipmentOrder.attr('disabled', false);
                             }
                         }
                     });

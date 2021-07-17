@@ -44,8 +44,9 @@
             <div class="collapse" id="collapseShipment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
                     <a class="nav-link" href="<?= site_url('auth/shipment') ?>"> <div class="sb-nav-link-icon"><i class="fas fa-truck"></i></div> Shipment Process </a>
-                    <a class="nav-link" href="<?= site_url('auth/shipment_order') ?>"> 
-                    <div class="sb-nav-link-icon"><i class="fas fa-shipping-fast"></i></div> Shipment Order </a>
+                    <!-- <a class="nav-link" href="<?= site_url('auth/shipment_order') ?>"> 
+                        <div class="sb-nav-link-icon"><i class="fas fa-shipping-fast"></i></div> Shipment Order 
+                    </a> -->
                 </nav>
             </div>
 

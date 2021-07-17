@@ -18,5 +18,6 @@
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.js" crossorigin="anonymous"></script>
 
 <!-- <script src="<?php echo base_url('template/js/datatables-simple-demo.js') ?>"></script> -->

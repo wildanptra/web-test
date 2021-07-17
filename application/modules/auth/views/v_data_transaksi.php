@@ -55,7 +55,7 @@
                                     </button>
                                     
 
-                                    <table class="table table-striped table-bordered table-hover" id="table-order" width="100%">
+                                    <table class="table table-striped table-bordered table-hover display nowrap" id="table-order" width="100%">
                                         
                                         <thead>
                                             <tr>
@@ -125,19 +125,27 @@
                 tableOrder.DataTable({
                     "processing" : true,
                     "serverSide" : true,
+                    "scrollX": true,
                     "order" : [],
                     "ajax": {
-                        "url" : "<?= site_url('auth/order/getDataTransaksi')?>",
+                        "url" : "<?= site_url('auth/order/get_transaksi_json')?>",
                         "type" : "POST",
                     },
+                    "columns": [
+                        { "data" : "no"},
+                        { "data" : "username_user"},
+                        { "data" : "name_product"},
+                        { "data" : "tanggal_transaksi"},
+                        { "data" : "qty"},
+                        { "data" : "price",render: $.fn.dataTable.render.number(',', '.', '')},
+                        { "data" : "total",render: $.fn.dataTable.render.number(',', '.', '')},
+                        { "data" : "action"},
+                    ],
                     "columnDefs": [
                         { 
-                            "targets": [0 ,3],
-                            "orderable": true,
+                            "targets": [0 ,7],
+                            "orderable": false,
                         },
-                        {
-                            "targets" : [1,2,3,4,5],
-                        }
                     ],
                     "language": {
                         "zeroRecords": "Belum ada data transaksi yang selesai, silahkan tambah order terlebih dahulu.",

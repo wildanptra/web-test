@@ -88,7 +88,7 @@
                                         <p><?= $this->db->count_all_results('tb_shipment'); ?> Data Shipment</p>
                                     </div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="<?= base_url('auth/landing') ?>">See Details</a>
+                                        <a class="small text-white stretched-link" href="<?= base_url('auth/shipment') ?>">See Details</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>

@@ -14,7 +14,7 @@ class DBBuilder extends MY_Controller {
         // dd($active);
         $capsule = new DB();
         $capsule->addConnection([
-            'driver'    => 'sqlsrv',
+            'driver'    => 'mysql',
             'host'      => $active['hostname'],
             'database'  => $active['database'],
             'username'  => $active['username'],

@@ -59,7 +59,7 @@
                                     </button>
                                     
 
-                                    <table class="table table-striped table-bordered table-hover" id="table-category" width="100%">
+                                    <table class="table table-striped table-bordered table-hover display nowrap" id="table-category" width="100%">
                                         
                                         <thead>
                                             <tr>
@@ -117,21 +117,28 @@
                 tableCategory.DataTable({
                     "processing" : true,
                     "serverSide" : true,
+                    "scrollX": true,
                     "order" : [],
                     "ajax": {
-                        "url" : "<?= site_url('auth/category/getData')?>",
+                        "url" : "<?= site_url('auth/category/get_json')?>",
                         "type" : "POST",
                     },
+                    "columns": [
+                        { "data" : "no"},
+                        { "data" : "name"},
+                        { "data" : "description"},
+                        { "data" : "action"},
+                    ],
                     "columnDefs": [
                         { 
                             "targets": [0 ,3],
                             "orderable": false,
-                        },
-                        {
-                            "targets" : [0,1,2,3],
-                            "className" : "text-center",
                         }
                     ],
+                    "language": {
+                        "zeroRecords": "Belum ada product category, silahkan tambah product category terlebih dahulu.",
+                        "infoEmpty": "No records available"
+                    }
                 })
 
             });

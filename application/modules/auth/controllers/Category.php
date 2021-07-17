@@ -18,35 +18,50 @@ class Category extends NoAuth_Controller {
         $this->load->view('v_category', $data);
     }
 
-    public function getData()
-    {   
-        $this->load->model('category_model');
-
-        $results = $this->category_model->getDataTable();
-        $data = [];
-        $no = $_POST['start'];
-        foreach( $results as $result ){
-            $row = array();
-            $row[] = ++$no;
-            $row[] = $result->name;
-            $row[] = $result->description;
-            $row[] = '
-                <a href="#" class="btn btn-primary btn-sm" onclick="byid(' . "'" . $result->id_category. "','edit'" . ')"><i class="fa fa-edit"></i> Edit</a> 
-                <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_category. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a> 
-            ';
-            $data[] = $row;
-        }
-
-        $output = array(
-            'draw' => $_POST['draw'],
-            'recordsTotal' => $this->category_model->count_all_data(),
-            'recordsFiltered' => $this->category_model->count_filter_data(),
-            'data' => $data,
+    public function get_json()
+    {
+        $this->load->library('datatables');
+        $this->datatables->select('id_category,name,description');
+        $this->datatables->from('tb_category');
+        $this->datatables->add_column('no','ID-$1','id_category');
+        $this->datatables->add_column(
+            'action', 
+            '<a href="#" class="btn btn-primary btn-sm" onclick="byid($1,\'edit\')"><i class="fa fa-edit"></i> Edit</a>
+            <a href="#" class="btn btn-danger btn-sm" onclick="byid($1,\'delete\')"><i class="fa fa-trash"></i> Delete</a>',
+            'id_category'
         );
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($output));
-
+        return print_r($this->datatables->generate());
     }
+
+    // public function getData()
+    // {   
+    //     $this->load->model('category_model');
+
+    //     $results = $this->category_model->getDataTable();
+    //     $data = [];
+    //     $no = $_POST['start'];
+    //     foreach( $results as $result ){
+    //         $row = array();
+    //         $row[] = ++$no;
+    //         $row[] = $result->name;
+    //         $row[] = $result->description;
+    //         $row[] = '
+    //             <a href="#" class="btn btn-primary btn-sm" onclick="byid(' . "'" . $result->id_category. "','edit'" . ')"><i class="fa fa-edit"></i> Edit</a> 
+    //             <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_category. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a> 
+    //         ';
+    //         $data[] = $row;
+    //     }
+
+    //     $output = array(
+    //         'draw' => $_POST['draw'],
+    //         'recordsTotal' => $this->category_model->count_all_data(),
+    //         'recordsFiltered' => $this->category_model->count_filter_data(),
+    //         'data' => $data,
+    //     );
+
+    //     $this->output->set_content_type('application/json')->set_output(json_encode($output));
+
+    // }
 
 
     public function create()
@@ -147,12 +162,6 @@ class Category extends NoAuth_Controller {
             $data['error_string'][] = 'Nama Category harus di isi';
             $data['status'] = false;
         }
-
-        // if($this->input->post('description') == '') {
-        //     $data['inputerror'][] = 'description';
-        //     $data['error_string'][] = 'Description Category harus di isi';
-        //     $data['status'] = FALSE;
-        // }
 
         if($data['status'] == false) {
             echo json_encode($data);

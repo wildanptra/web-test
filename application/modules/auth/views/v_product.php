@@ -58,7 +58,7 @@
                                     </button>
                                     
 
-                                    <table class="table table-striped table-bordered table-hover" id="table-product" width="100%">
+                                    <table class="table table-striped table-bordered table-hover display nowrap" id="table-product" width="100%">
                                         
                                         <thead>
                                             <tr>
@@ -119,21 +119,31 @@
                 tableProduct.DataTable({
                     "processing" : true,
                     "serverSide" : true,
+                    "scrollX": true,
                     "order" : [],
                     "ajax": {
-                        "url" : "<?= site_url('auth/product/getData')?>",
+                        "url" : "<?= site_url('auth/product/get_json')?>",
                         "type" : "POST",
                     },
+                    "columns": [
+                        { "data" : "no"},
+                        { "data" : "name"},
+                        { "data" : "description"},
+                        { "data" : "name_category"},
+                        { "data" : "stock"},
+                        { "data" : "price",render: $.fn.dataTable.render.number(',', '.', '')},
+                        { "data" : "action"},
+                    ],
                     "columnDefs": [
                         { 
                             "targets": [0 ,6],
                             "orderable": false,
                         },
-                        {
-                            "targets" : [0,1,2,3,4,5,6],
-                            "className" : "text-center",
-                        }
                     ],
+                    "language": {
+                        "zeroRecords": "Belum ada product, silahkan tambah product terlebih dahulu.",
+                        "infoEmpty": "No records available"
+                    }
                 })
 
             });
@@ -231,6 +241,7 @@
 
                         },
                         error : function() {
+                            
                             message('error','Server sedang ada gangguan, silahkan ulangi kembali');
                             
                             if(saveData == 'add'){

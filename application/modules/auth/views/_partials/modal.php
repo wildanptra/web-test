@@ -176,8 +176,8 @@
 <!-- End Modal Order -->
 
 <!-- Modal Add Shipment -->
-<div class="modal fade" id="modalAddShipment" tabindex="-1" aria-labelledby="modalAddShipmentLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade" id="modalAddShipment" tabindex="-1" aria-labelledby="modalAddShipmentLabel" aria-hidden="true" style="overflow-y: scroll;">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalTitleShipment"></h5>
@@ -188,6 +188,7 @@
       <div class="modal-body form">
 
         <form action="<?= site_url('auth/shipment/create') ?>" method="post" id="formAddShipment">
+        
             <input type="hidden" name="id_shipment" id="id_shipment" value="">
 
             <div class="form-group">
@@ -214,6 +215,77 @@
               </div>
             </div>
 
+            <div class="form-group">
+              <label for="order-shipment">Order <span class="text-danger">*</span></label>
+              <div class="table-responsive">
+                  <table class="table" id="wrap-add">
+                    <tr class="tr1">
+                      <td>
+                        <select name="id_order[]" class="form-control order-shipment">
+                          <option value="" selected disabled>- Choose Order -</option>
+                          <?php foreach($order as $data): ?>
+                            <?php if($data->status_order == 'selesai' ): ?>
+                              <option data-product="<?= $data->name_product; ?>" data-qty="<?= $data->qty; ?>" data-price="<?= $data->price; ?>" data-total="<?= $data->total; ?>" value="<?= $data->id_order ?>">
+                                (<?= $data->username_user; ?>) - <?= $data->name_product; ?> - Total : <?= $data->total; ?> - Tanggal Transaksi : <?= $data->tanggal_transaksi; ?> (<?= $data->status_order; ?>)
+                              </option>
+                            <?php endif; ?>
+                          <?php endforeach; ?>
+                        </select>
+                      </td>
+
+                      <td>
+                        <input type="text" name="product_order_shipment" id="product-order-shipment" placeholder="Product Name.." class="form-control product-order-shipment" readonly />
+                      </td>
+                      
+                      <td>
+                        <input type="text" placeholder="Quantity.." class="form-control qty-order-shipment" readonly />
+                      </td>
+
+                      <td>
+                        <input type="text" placeholder="Price.." class="form-control price-order-shipment" readonly />
+                      </td>
+
+                      <td>
+                        <input type="text" placeholder="Total.." class="form-control total-order-shipment" readonly />
+                      </td>
+
+                      <td>
+                        <button type="button" id="tambah" class="btn btn-success btn-sm mt-1">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+              </div>
+              <div class="invalid-feedback">
+                  
+              </div>
+            </div>
+
+            <div class="form-group">
+                <label for="total-shipment">Grand Total <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" name="grandtotal" id="grandtotal-shipment" placeholder=" Grand Total.." value="0" readonly>
+              <div class="invalid-feedback">
+                  
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="status-shipment">Status Shipment <span class="text-danger">*</span></label>
+              <select name="status_shipment" id="status-shipment" class="form-control">
+                <option value="" selected disabled>- Choose Status -</option>
+                 
+                <option value="proses">Proses</option>
+                <option value="selesai">Selesai</option>
+                
+              </select>
+              <div class="invalid-feedback">
+                  
+              </div>
+            </div>
+
+
+
             <div class="float-right">
                 <button type="submit" class="btn btn-primary btn-sm" value="submit" id="btnSaveModalShipment" onclick="save()" >Save</button>
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" id="btnCloseModalShipment">Close</button>
@@ -224,3 +296,85 @@
   </div>
 </div>
 <!-- End Modal Shipment -->
+
+<!-- Modal Add Shipment Order -->
+<div class="modal fade" id="modalAddShipmentOrder" tabindex="-1" aria-labelledby="modalAddShipmentOrderLabel" aria-hidden="true" style="overflow-y: scroll;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitleShipmentOrder"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeModalShipmentOrder">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body form">
+
+        <form action="<?= site_url('auth/shipment_order/create') ?>" method="post" id="formAddShipmentOrder">
+        
+            <input type="hidden" name="id_shipment_order" id="id_shipment_order" value="">
+
+            <div class="form-group">
+              <label for="order-shipment-order">Order <span class="text-danger">*</span></label>
+              <select name="id_order" id="order-shipment-order" class="form-control">
+                <option value="" selected disabled>- Choose Order -</option>
+                 <?php foreach($order as $data): ?>
+                  <?php if($data->status_order == 'selesai' ): ?>
+                    <option value="<?= $data->id_order ?>">
+                      (<?= $data->username_user; ?>) - <?= $data->name_product; ?> - Total : <?= $data->total; ?> - Tanggal Transaksi : <?= $data->tanggal_transaksi; ?> (<?= $data->status_order; ?>)
+                    </option>
+                  <?php endif; ?>
+                 <?php endforeach; ?>
+              </select>
+              <div class="invalid-feedback">
+                  
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="shipment-shipment-order">Shipment <span class="text-danger">*</span></label>
+              <select name="id_shipment" id="shipment-shipment-order" class="form-control">
+                <option value="" selected disabled>- Choose Shipment -</option>
+                 <?php foreach($shipment as $data): ?>
+                    <option value="<?= $data->id_shipment ?>">
+                      Kurir : <?= $data->courier_name; ?> - Tanggal Pengiriman: <?= $data->date_shipment; ?> - <?= $data->address; ?> (<?= $data->status_shipment; ?>)
+                    </option>
+                 <?php endforeach; ?>
+              </select>
+              <div class="invalid-feedback">
+                  
+              </div>
+            </div>
+
+            <div class="float-right">
+                <button type="submit" class="btn btn-primary btn-sm" value="submit" id="btnSaveModalShipmentOrder" onclick="saveShipmentOrder()" >Save</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" id="btnCloseModalShipmentOrder">Close</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Shipment Order -->
+
+<!-- <div class="form-group">
+        <label for="order-shipment">Order <span class="text-danger">*</span></label>
+        <div class="form-inline" id="wrap-add">
+            <input type="text" class="form-control" name="courier_name" id="courier-shipment" placeholder="Order..">
+            <a href="#" class="btn btn-success btn-md ml-2"><i class="fa fa-plus"></i> Add Order</a>
+        </div>
+        <div class="invalid-feedback">
+          
+        </div>
+        <div class="table-responsive">
+            <table class="table" id="wrap-add">
+              <tr>
+                <td><input type="text" placeholder="Order.." class="form-control" id="order-shipment" /></td>
+                <td>
+                  <button type="button" id="tambah" class="btn btn-success btn-sm mt-1">
+                    <i class="fa fa-plus"></i> Add
+                  </button>
+                </td>
+              </tr>
+            </table>
+        </div>
+    </div> -->

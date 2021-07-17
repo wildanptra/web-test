@@ -37,89 +37,55 @@ class Order extends NoAuth_Controller {
         $this->load->view('v_data_transaksi', $data);
     }
 
-    public function getData()
-    {   
-        $this->load->model('product_model');
-        $this->load->model('category_model');
-        $this->load->model('order_model');
-
-        $results = $this->order_model->getDataTable();
-        $data = [];
-        $no = $_POST['start'];
-        
-
-        foreach( $results as $result ){
-            if($result->status_order == 'proses') {
-                $row = array();
-                $row[] = ++$no;
-                $row[] = $result->name_product;
-                $row[] = $result->qty;
-                $row[] = number_format($result->price,0,',','.');
-                $row[] = number_format($result->total,0,',','.');
-                $row[] = $result->username_user;
-                $row[] = '
-                    <a href="#" class="btn btn-primary btn-sm" onclick="byid(' . "'" . $result->id_order. "','edit'" . ')"><i class="fa fa-edit"></i> Edit</a>
-                    <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_order. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a>
-                    <a href="#" class="btn btn-success btn-sm" onclick="byid(' . "'" . $result->id_order. "','bayar'" . ')" value="id_order"><i class="fa fa-money-bill-alt"></i> Exchange</a>
-                ';
-                $data[] = $row;
-            }
-        }
-
-        $output = array(
-            'draw' => $_POST['draw'],
-            'recordsTotal' => $this->order_model->count_all_data(),
-            'recordsFiltered' => $this->order_model->count_filter_data(),
-            'data' => $data,
+    public function get_json()
+    {
+        $this->load->library('datatables');
+        $this->datatables->select('tb_order.*,
+        tb_order.id_order,
+        tb_product.id_product,
+        tb_product.name as name_product,
+        tb_product.description as description_product,
+        tb_product.stock as stock_product,
+        tb_product.price as price_product,
+        tb_order.qty,
+        tb_order.price,
+        tb_order.total,
+        tb_users.user_id,
+        tb_users.username as username_user,
+        tb_order.status_order,
+        tb_order.tanggal_transaksi
+        ');
+        $this->datatables->from('tb_order');
+        $this->datatables->where('status_order','proses');
+        $this->datatables->join('tb_product','tb_order.id_product = tb_product.id_product');
+        $this->datatables->join('tb_users','tb_order.user_id = tb_users.user_id');
+        $this->datatables->add_column('no','ID-$1','id_order');
+        $this->datatables->add_column(
+            'action',
+            '<a href="#" class="btn btn-primary btn-sm" onclick="byid($1,\'edit\')"><i class="fa fa-edit"></i> Edit</a>
+            <a href="#" class="btn btn-danger btn-sm" onclick="byid($1,\'delete\')"><i class="fa fa-trash"></i> Delete</a>
+            <a href="#" class="btn btn-success btn-sm" onclick="byid($1,\'bayar\')"><i class="fa fa-money-bill-alt"></i> Exchange</a>',
+            'id_order'
         );
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($output));
-
-
+        return print_r($this->datatables->generate());   
     }
 
-
-    public function getDataTransaksi()
-    {   
-        $this->load->model('product_model');
-        $this->load->model('category_model');
-        $this->load->model('order_model');
-
-        $results = $this->order_model->getDataTable();
-        $data = [];
-        $no = $_POST['start'];
-        
-
-        foreach( $results as $result ){
-            if($result->status_order == 'selesai') {
-                $row = array();
-                $row[] = ++$no;
-                $row[] = $result->username_user;
-                $row[] = $result->name_product;
-                $row[] = $result->tanggal_transaksi;
-                $row[] = $result->qty;
-                $row[] = number_format($result->price,0,',','.');
-                $row[] = number_format($result->total,0,',','.');
-                $row[] = '
-                    <a href="#" class="btn btn-danger btn-sm" onclick="byid(' . "'" . $result->id_order. "','delete'" . ')"><i class="fa fa-trash"></i> Delete</a>
-                ';
-                $data[] = $row;
-            }
-        }
-
-        $output = array(
-            'draw' => $_POST['draw'],
-            'recordsTotal' => $this->order_model->count_all_data(),
-            'recordsFiltered' => $this->order_model->count_filter_data(),
-            'data' => $data,
+    public function get_transaksi_json()
+    {
+        $this->load->library('datatables');
+        $this->datatables->select('tb_order.*,tb_order.id_order,tb_product.id_product,tb_product.name as name_product,tb_product.description as description_product,tb_product.stock as stock_product,tb_product.price as price_product,tb_order.qty,tb_order.price,tb_order.total,tb_users.user_id,tb_users.username as username_user,tb_order.status_order,tb_order.tanggal_transaksi');
+        $this->datatables->from('tb_order');
+        $this->datatables->where('status_order','selesai');
+        $this->datatables->join('tb_product','tb_order.id_product = tb_product.id_product');
+        $this->datatables->join('tb_users','tb_order.user_id = tb_users.user_id');
+        $this->datatables->add_column('no','ID-$1','id_order');
+        $this->datatables->add_column(
+            'action',
+            '<a href="#" class="btn btn-danger btn-sm" onclick="byid($1,\'delete\')"><i class="fa fa-trash"></i> Delete</a>',
+            'id_order'
         );
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($output));
-
-
+        return print_r($this->datatables->generate());   
     }
-    
-
 
     public function create()
     {

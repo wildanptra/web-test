@@ -37,6 +37,7 @@
                             </div>
                         <?php } ?>
 
+                        <div id="infoValidasi"></div>
                     
                         <div class="row">
                             <div class="col-md-12">
@@ -44,13 +45,14 @@
                             <div class="card mb-4">
 
                                 <div class="card-header">
-                                    <h4>Data Shipment</h4>
+                                    <h4>Data Shipment Process</h4>
                                 </div>
 
                                 <div class="card-body">
 
+
                                     <button type="button" class="btn btn-sm btn-primary mt-2 mb-4" onclick="add()">
-                                        <i class="fa fa-plus"></i> Add Shipment 
+                                    <i class="fa fa-plus"></i> Add Shipment 
                                     </button>
 
                                     <button type="button" class="btn btn-sm btn-secondary mt-2 mb-4" onclick="reloadTable()">
@@ -58,7 +60,7 @@
                                     </button>
                                     
 
-                                    <table class="table table-striped table-bordered table-hover" id="table-shipment" width="100%">
+                                    <table class="table table-striped table-bordered table-hover display nowrap" id="table-shipment" width="100%">
                                         
                                         <thead>
                                             <tr>
@@ -66,6 +68,7 @@
                                                 <th>Date Shipment</th>
                                                 <th>Address</th>
                                                 <th>Courier Name</th>
+                                                <th>Grand Total</th>
                                                 <th>Status Shipment</th>
                                                 <th>Action</th>
                                             </tr>
@@ -106,44 +109,111 @@
             let saveData;
             let modalAddShipment = $('#modalAddShipment');
             let tableShipment = $('#table-shipment');
-            let formAddShipment = $('#formAddShipment');
-            let modalTitleShipment = $('#modalTitleShipment');
-            let closeModalShipment = $('#closeModalShipment');
-            let btnCloseModalShipment = $('#btnCloseModalShipment');
+            let formAddShipment = $('#formAddShipment');          
+            let modalTitleShipment = $('#modalTitleShipment');           
+            let closeModalShipment = $('#closeModalShipment');            
+            let btnCloseModalShipment = $('#btnCloseModalShipment');           
             let btnSaveModalShipment= $('#btnSaveModalShipment');
-
-            // selected option
-            let productShipment    = $('#product-shipment');
-            let qtyShipment        = $('#qty-shipment');
-            let priceShipment      = $('#price-shipment');
-            let totalShipment      = $('#total-shipment');
-            // end selected option
-
+            
             // let btnEdit = $('#btnEdit');
 
+            // select option order shipment
+            // let orderShipment = $('#order-shipment');
+
+            // let productOrderShipment   = $('#product-order-shipment');
+            // let qtyOrderShipment        = $('#qty-order-shipment');
+            // let priceOrderShipment      = $('#price-order-shipment');
+            // let totalOrderShipment      = $('#total-order-shipment');
+            // end select option order shipment
+ 
             $(document).ready(function(){
 
                 tableShipment.DataTable({
                     "processing" : true,
                     "serverSide" : true,
-                    "shipment" : [],
+                    "scrollX": true,
+                    "order" : [],
                     "ajax": {
-                        "url" : "<?= site_url('auth/shipment/getData')?>",
+                        "url" : "<?= site_url('auth/shipment/get_json')?>",
                         "type" : "POST",
                     },
+                    "columns": [
+                        { "data" : "no"},
+                        { "data" : "date_shipment"},
+                        { "data" : "address"},
+                        { "data" : "courier_name" },
+                        { "data" : "grandtotal" },
+                        { "data" : "status_shipment" },
+                        { "data" : "action"},
+                    ],
                     "columnDefs": [
                         { 
-                            "targets": [0,5],
+                            "targets": [0 ,6],
                             "orderable": false,
-                        },
+                        }
                     ],
                     "language": {
-                        "zeroRecords": "Belum ada shipment, silahkan tambah shipment terlebih dahulu.",
+                        "zeroRecords": "Belum ada data shipment, silahkan tambah data shipment terlebih dahulu.",
                         "infoEmpty": "No records available"
                     }
                 })
 
             });
+
+            $(document).ready(function(){
+				
+
+				var no = 1;
+				$('#tambah').click(function(){
+					no++;
+					$('#wrap-add').append('<tr id="row'+no+'"><td><select name="id_order[]" class="form-control order-shipment"><option value="" selected disabled>- Choose Order -</option><?php foreach($order as $data): ?><?php if($data->status_order == 'selesai' ): ?><option data-product="<?= $data->name_product; ?>" data-qty="<?= $data->qty; ?>" data-price="<?= $data->price; ?>" data-total="<?= $data->total; ?>" value="<?= $data->id_order ?>">(<?= $data->username_user; ?>) - <?= $data->name_product; ?> - Total : <?= $data->total; ?> - Tanggal Transaksi : <?= $data->tanggal_transaksi; ?> (<?= $data->status_order; ?>)</option><?php endif; ?><?php endforeach; ?></select></td><td><input type="text" name="product_order_shipment" placeholder="Product Name.." class="form-control product-order-shipment" readonly /></td><td><input type="text" placeholder="Quantity.." class="form-control qty-order-shipment" readonly /></td><td><input type="text" placeholder="Price.." class="form-control price-order-shipment" readonly /></td><td><input type="text" placeholder="Total.." class="form-control total-order-shipment" readonly /></td><td><button type="button" id="'+no+'"class="btn btn-danger btn-sm mt-1 btn_remove"><i class="fa fa-trash-alt"></i></button></td></tr>');
+				});
+
+				$(document).on('click', '.btn_remove', function(){
+					var button_id = $(this).attr("id"); 
+					$('#row'+button_id+'').remove();
+
+                    var grandtotal = parseInt(0);
+                    
+                    $('.total-order-shipment').each(function() {
+                        var total = parseInt($(this).val());
+                        grandtotal-=total;
+                        hasil = Math.abs(grandtotal)
+                        $('#grandtotal-shipment').val(hasil);
+                    });
+				});
+
+                $(document).on('change','.order-shipment',function(){     
+
+                    let row = $(this).closest('tr');
+
+                    var displayProductOrderShipment = $(this).find('option:selected').data('product');
+
+                    row.find('.product-order-shipment').val(displayProductOrderShipment);
+
+                    var displayQtyOrderShipment = $(this).find('option:selected').data('qty');
+
+                    row.find('.qty-order-shipment').val(displayQtyOrderShipment);
+
+                    var displayPriceOrderShipment = $(this).find('option:selected').data('price');
+
+                    row.find('.price-order-shipment').val(displayPriceOrderShipment);
+
+                    var displayTotalOrderShipment = $(this).find('option:selected').data('total');
+
+                    row.find('.total-order-shipment').val(displayTotalOrderShipment);
+
+                    var grandtotal = parseInt(0);
+                    
+                    $('.total-order-shipment').each(function() {
+                        var total = parseInt($(this).val());
+                        grandtotal+=total;
+                        $('#grandtotal-shipment').val(grandtotal);
+                    });
+
+                });
+
+			});
 
                 closeModalShipment.click(function(){
                     modalAddShipment.modal('hide');
@@ -151,6 +221,14 @@
 
                 btnCloseModalShipment.click(function(){
                     modalAddShipment.modal('hide');
+                });
+                
+                closeModalShipmentOrder.click(function(){
+                    modalAddShipmentOrder.modal('hide');
+                });
+
+                btnCloseModalShipmentOrder.click(function(){
+                    modalAddShipmentOrder.modal('hide');
                 });
 
                 function message(icon, text) {
@@ -165,7 +243,7 @@
                     });
                 }
 
-                function deleteConfirm(id, name = 'shipment') {
+                function deleteConfirm(id, name = 'Shipment') {
                     Swal.fire({
                         title: 'Apakah anda yakin ?',
                         text: "akan menghapus data " + name,
@@ -176,21 +254,6 @@
                         }).then((result) => {
                         if (result.isConfirmed) {
                             deleteData(id);
-                        }
-                    })
-                }
-
-                function bayarShipmentConfirm(id, name = 'shipment') {
-                    Swal.fire({
-                        title: 'Konfirmasi Bayar',
-                        text: "apakah anda ingin membayar " + name + " ?",
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        }).then((result) => {
-                        if (result.isConfirmed) {
-                            bayarShipment(id);
                         }
                     })
                 }
@@ -283,7 +346,7 @@
                         dataType: "json",
                         success : function(response){
                             // kalau error cek dulu di console pake console.log(response);
-                            
+                            console.log(response);
                             if( type == 'edit' ) {
                                 formAddShipment.find('input').removeClass('is-invalid');
                                 modalTitleShipment.text('Form Edit Shipment');
@@ -293,16 +356,14 @@
                                 $('[name="date_shipment"]').val(response.date_shipment);
                                 $('[name="address"]').val(response.address);
                                 $('[name="courier_name"]').val(response.courier_name);
+                                $('[name="grandtotal"]').val(response.grandtotal);
+                                $('[name="status_shipment"]').val(response.status_shipment);
                                 modalAddShipment.modal('show');
 
                             }else if( type == 'delete' ) {
 
                                 deleteConfirm(response.id_shipment,response.name);
 
-                            }else if( type == 'bayar' ) {
-                                
-                                bayarShipmentConfirm(response.id_shipment,response.name);
-                                
                             }
 
                         },
@@ -319,7 +380,6 @@
                                 btnSaveModalShipment.text('Save');
                                 btnSaveModalShipment.attr('disabled', false);
                             }
-
                         },
 
                     });
@@ -336,24 +396,6 @@
                             // console.log(response);
                             reloadTable();
                             message('success','Data Berhasi di Hapus');
-                        },
-                        error: function(){
-                            message('error','Server sedang ada gangguan, silahkan ulangi kembali');
-                        },
-                    });
-
-                }
-
-                function bayarShipment(id_shipment) {
-
-                    $.ajax({
-                        type: "POST",
-                        url: "<?= base_url('auth/shipment/bayar/')?>" + id_shipment,
-                        dataType: "JSON",
-                        success: function (response) {
-                            // console.log(response);
-                            reloadTable();
-                            message('success','Transaksi Berhasil');
                         },
                         error: function(){
                             message('error','Server sedang ada gangguan, silahkan ulangi kembali');
